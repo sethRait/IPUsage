@@ -15,7 +15,9 @@ public class IPData {
         File output = new File(FILE_LOCATION+"\\"+FILE_NAME);
         if(!output.exists())
             createFile(output);
-        //else
+        else{
+            readFile(output);
+        }
 
     }
 
@@ -32,5 +34,18 @@ public class IPData {
             System.out.println(DATE+"\t"+header+i);
         }
         write.close();
+    }
+
+    /**
+     * Read from the log file and check dates
+     * @param output
+     */
+    private static void readFile(File output) {
+        //create scan object
+        //create some sort of object that can append and overwrite
+        //scan line input, 1st token is date, 2nd is address.
+        //if IP is in both file and current scan, update date.
+        //else, if IP is in file but not scan, do nothing,
+        //else if IP is in scan and not file, add to file and include current date
     }
 }
