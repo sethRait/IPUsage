@@ -114,6 +114,7 @@ public class Scan {
      * @return dateRep
      */
     public Map<IP, String> asMap(){
+        dateRep = new HashMap<>();
         IP currentIP;
         String currentDate;
         Iterator<IP> IPit = active.iterator();
