@@ -16,14 +16,15 @@ public class IPData {
         if(!output.exists())
             createFile(output);
         else{
-            readFile(output);
+            Scan old = readFile(output);
+            process(old);
         }
 
     }
 
     /**
      * Create a new file to begin data collection.  By default, all possible IP addresses are listed as being active on TODAY
-     * @param output
+     * @param output the output file for holding old scan data
      * @throws FileNotFoundException
      */
     public static void createFile(File output) throws FileNotFoundException{
@@ -37,15 +38,42 @@ public class IPData {
     }
 
     /**
-     * Read from the log file and check dates
-     * @param output
+     * Read from the log file
+     * @param output the output file for holding old scan data
      */
-    private static void readFile(File output) {
-        //create scan object
-        //create some sort of object that can append and overwrite
-        //scan line input, 1st token is date, 2nd is address.
-        //if IP is in both file and current scan, update date.
-        //else, if IP is in file but not scan, do nothing,
-        //else if IP is in scan and not file, add to file and include current date
+    public static Scan readFile(File output)throws FileNotFoundException {
+        List<String> dates = new LinkedList<>();
+        List<IP> addresses = new LinkedList<>();
+        Scanner reader = new Scanner(output);
+        reader.useDelimiter("[\t\r\n]+");
+        while(reader.hasNext()){
+            dates.add(reader.next());
+            addresses.add(new IP(reader.next()));
+        }
+        return new Scan(addresses, dates);
+    }
+
+    /**
+     * Helper method
+     * Compare new data and old data
+     * @param old old scan data
+     */
+     public static void process(Scan old) {
+        Scan cur = new Scan();  //current IP usage
+        Map<IP, String> newData = cur.asMap();
+        Map<IP, String> oldData = old.asMap();
+        if(newData.size()>oldData.size())
+            process(newData, oldData);
+        else
+            process(oldData, newData);
+    }
+
+    /**
+     * Compare new and old data
+     * @param big the larger of two Scan objects represented as a Map
+     * @param small the smaller of two Scan objects represented as a Map
+     */
+    public static void process(Map<IP, String> big, Map<IP,String> small){
+
     }
 }

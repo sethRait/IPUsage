@@ -8,13 +8,30 @@ public class Scan {
     public static final String IP_RANGE = "129.64.58.0";     //IP range for NMAP scan ex. 192.168.50.0
     private List<IP> active;
     private List<String> rawData;   //for debugging purposes only
+    private Map<IP, String> dateRep;
+    private List<String> date;
 
+    /**
+     * Initializes a new Scan object with the results of a current NMAP scan.
+     * Initializes Date to today
+     */
     public Scan(){
         active = new LinkedList<>();
         runCmd();
+        Calendar cal = new GregorianCalendar();
+        String currDate = cal.get(Calendar.MONTH)+"/"+cal.get(Calendar.DAY_OF_MONTH)+"/"+cal.get(Calendar.YEAR);
+        date = new LinkedList<>();
+        for(int i=0;i<active.size();i++)
+            date.add(currDate);
     }
-    public Scan(List<IP> active){
+
+    /**
+     * Initializes a new Scan object from the given list of IP addresses and date
+     * @param active
+     */
+    public Scan(List<IP> active, List<String> date){
         this.active=active;
+        this.date=date;
     }
 
     /**
@@ -68,6 +85,10 @@ public class Scan {
         }
     }
 
+    /**
+     * Removes header and timestamp info
+     * @param duplicate
+     */
     private void trim(List<String> duplicate){
         duplicate.remove(0); //header
         duplicate.remove(0);  //header
@@ -84,6 +105,25 @@ public class Scan {
      */
     public List<String> raw(){
         return rawData;
+    }
+
+    /**
+     * Creates and returns a HashMap representation of the list, wherein the Key is the IP
+     * and the Value is the Date associated with the IP.
+     * if called on a newly created object, date will be today.
+     * @return dateRep
+     */
+    public Map<IP, String> asMap(){
+        IP currentIP;
+        String currentDate;
+        Iterator<IP> IPit = active.iterator();
+        Iterator<String> Dateit = date.iterator();
+        while(IPit.hasNext()){
+            currentIP = IPit.next();
+            currentDate = Dateit.next();
+            dateRep.put(currentIP,currentDate);
+        }
+        return dateRep;
     }
 
     public String toString(){
