@@ -5,7 +5,7 @@ import java.util.*;
 import java.io.*;
 public class Scan {
 
-    public static final String IP_RANGE = "129.64.58.0";     //IP range for NMAP scan ex. 192.168.50.0
+    public static final String IP_RANGE = "92.168.1.1";     //IP range for NMAP scan ex. 192.168.1.1
     private List<IP> active;
     private List<String> rawData;   //for debugging purposes only
     private Map<IP, String> dateRep;
@@ -114,24 +114,33 @@ public class Scan {
      * @return dateRep
      */
     public Map<IP, String> asMap(){
-        dateRep = new HashMap<>();
-        IP currentIP;
-        String currentDate;
-        Iterator<IP> IPit = active.iterator();
-        Iterator<String> Dateit = date.iterator();
-        while(IPit.hasNext()){
-            currentIP = IPit.next();
-            currentDate = Dateit.next();
-            dateRep.put(currentIP,currentDate);
-        }
+        dateRep = new TreeMap<>();
+        Iterator<String> dateIt = date.iterator();
+        for(IP ip : active)
+            dateRep.put(ip, dateIt.next());
         return dateRep;
     }
+
 
     public String toString(){
         Iterator itr = active.iterator();
         String s="["+itr.next();
         while(itr.hasNext())
             s+=", "+itr.next();
+        return s+"]";
+    }
+
+    public String toStringMap(){
+        asMap();
+        Iterator<IP> itr = dateRep.keySet().iterator();
+        IP currIP = itr.next();
+        String currDate = dateRep.get(currIP);
+        String s="["+currIP+": "+currDate;
+        while(itr.hasNext()) {
+            currIP = itr.next();
+            currDate = dateRep.get(currIP);
+            s += ", " + currIP+": "+currDate;
+        }
         return s+"]";
     }
 }

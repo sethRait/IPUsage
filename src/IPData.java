@@ -9,8 +9,8 @@ public class IPData {
 
     public static final Calendar TODAY = new GregorianCalendar();
     public static final String DATE = TODAY.get(Calendar.MONTH)+"/"+TODAY.get(Calendar.DAY_OF_MONTH)+"/"+TODAY.get(Calendar.YEAR);
-    public static final String FILE_LOCATION = "C:\\users\\srait\\box sync\\public domain\\reports";    //location to save output file
-    public static final String FILE_NAME = "Active_IP_58.txt";
+    public static final String FILE_LOCATION = "C:\\users\\temp";    //location to save output file
+    public static final String FILE_NAME = "Active_IP.txt";     //output file name
 
 
     public static void main(String[] args) throws Exception {
@@ -74,16 +74,14 @@ public class IPData {
      * @param big the larger of two Scan objects represented as a Map
      * @param little the smaller of two Scan objects represented as a Map
      */
-    public static Map<IP, String> process(Map<IP, String> big, Map<IP,String> little) throws ParseException {
+    public static Map<IP, String> process(Map<IP, String> big, Map<IP, String> little) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
         Iterator<IP> littleIt = little.keySet().iterator();
         while(littleIt.hasNext()){
             IP currentIP = littleIt.next();
             if(big.containsKey(currentIP)){     //if the larger map contains the specified IP
-                if(sdf.parse(big.get(currentIP)).before(sdf.parse(little.get(currentIP)))){ //if the date in big is before the date in little
-                    big.put(currentIP, little.get(currentIP));  //update the date for the IP in the large map
-                    System.out.println(big.get(currentIP));
-                }
+                if(sdf.parse(big.get(currentIP)).before(sdf.parse(little.get(currentIP)))) //if the date in big is before the date in little
+                    big.put(currentIP, DATE);  //update the date for the IP in the large map
             }
         }
         return big;

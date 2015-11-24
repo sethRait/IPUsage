@@ -7,7 +7,7 @@ public class IP implements Comparable<IP>{
 
     public IP(String address){
         this.address=address;
-        lastOctet=address.lastIndexOf("."+1,address.length());
+        lastOctet=Integer.parseInt(address.substring(address.lastIndexOf(".") + 1, address.length()));  //integer representation of the last octet of the given IP address
     }
 
     @Override
@@ -16,7 +16,7 @@ public class IP implements Comparable<IP>{
     }
 
     public boolean equals(IP o){
-        return this.compareTo(o)==0;
+        return(this.lastOctet == o.lastOctet);
     }
 
     public String toString(){
