@@ -5,7 +5,7 @@ import java.util.*;
 import java.io.*;
 public class Scan {
 
-    public static final String IP_RANGE = "92.168.1.1";     //IP range for NMAP scan ex. 192.168.1.1
+    public static final String IP_RANGE = "192.168.1.0";     //IP range for NMAP scan ex. 192.168.1.0
     private List<IP> active;
     private List<String> rawData;   //for debugging purposes only
     private Map<IP, String> dateRep;

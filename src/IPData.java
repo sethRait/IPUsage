@@ -8,13 +8,14 @@ import java.io.*;
 public class IPData {
 
     public static final Calendar TODAY = new GregorianCalendar();
-    public static final String DATE = TODAY.get(Calendar.MONTH)+"/"+TODAY.get(Calendar.DAY_OF_MONTH)+"/"+TODAY.get(Calendar.YEAR);
-    public static final String FILE_LOCATION = "C:\\users\\temp";    //location to save output file
+    public static final String DATE = TODAY.get(Calendar.MONTH)+1+"/"+TODAY.get(Calendar.DAY_OF_MONTH)+"/"+TODAY.get(Calendar.YEAR);    //Current Date
+    public static final String FILE_LOCATION = "C:\\Users\\temp";    //location to save output file
     public static final String FILE_NAME = "Active_IP.txt";     //output file name
 
 
     public static void main(String[] args) throws Exception {
         File output = new File(FILE_LOCATION+"\\"+FILE_NAME);
+        System.out.println(DATE);
         if(!output.exists())
             createFile(output);
         else{
