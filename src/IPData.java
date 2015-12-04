@@ -7,15 +7,14 @@ import java.util.*;
 import java.io.*;
 public class IPData {
 
-    public static final Calendar TODAY = new GregorianCalendar();
-    public static final String DATE = TODAY.get(Calendar.MONTH)+1+"/"+TODAY.get(Calendar.DAY_OF_MONTH)+"/"+TODAY.get(Calendar.YEAR);    //Current Date
-    public static final String FILE_LOCATION = "C:\\Users\\temp";    //location to save output file
+    public static final Date CURRDATE = new Date();
+    public static final String TODAY = new SimpleDateFormat("MM/dd/yyyy").format(CURRDATE);    //Current Date
+    public static final String FILE_LOCATION = "C:\\temp";    //location to save output file
     public static final String FILE_NAME = "Active_IP.txt";     //output file name
 
 
     public static void main(String[] args) throws Exception {
         File output = new File(FILE_LOCATION+"\\"+FILE_NAME);
-        System.out.println(DATE);
         if(!output.exists())
             createFile(output);
         else{
@@ -23,6 +22,7 @@ public class IPData {
             Map<IP, String> newData=process(old);
             writeFile(newData, output);
         }
+        System.out.println(TODAY);
 
     }
 
@@ -35,7 +35,7 @@ public class IPData {
         PrintWriter write = new PrintWriter(output);
         String header = Scan.IP_RANGE.substring(0,Scan.IP_RANGE.lastIndexOf(".")+1);
         for(int i=1;i<=255;i++)
-            write.println(DATE+"\t"+header+i);
+            write.println("1/1/1900"+"\t"+header+i);
         write.close();
     }
 
@@ -64,6 +64,7 @@ public class IPData {
         Scan cur = new Scan();  //current IP usage
         Map<IP, String> newData = cur.asMap();
         Map<IP, String> oldData = old.asMap();
+         System.out.println(newData);
         if(newData.size()>oldData.size())
             return(process(newData, oldData));
         else
@@ -81,8 +82,8 @@ public class IPData {
         while(littleIt.hasNext()){
             IP currentIP = littleIt.next();
             if(big.containsKey(currentIP)){     //if the larger map contains the specified IP
-                if(sdf.parse(big.get(currentIP)).before(sdf.parse(little.get(currentIP)))) //if the date in big is before the date in little
-                    big.put(currentIP, DATE);  //update the date for the IP in the large map
+                if(sdf.parse(big.get(currentIP)).before(sdf.parse(TODAY))) //if the date in big is before the date in little
+                    big.put(currentIP, TODAY);  //update the date for the IP in the large map
             }
         }
         return big;
