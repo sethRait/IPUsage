@@ -39,11 +39,19 @@ public class IP implements Comparable<IP>{
 
     @Override
     public int compareTo(IP o) {
-        return this.lastOctet()-o.lastOctet();
+        if(this.firstOctet() != o.firstOctet())
+            return this.firstOctet() - o.firstOctet();
+        else if(this.secondOctet() != o.secondOctet())
+            return this.secondOctet() - o.secondOctet();
+        else if(this.thirdOctet() != o.thirdOctet())
+            return this.thirdOctet() - o.thirdOctet();
+        else if(this.lastOctet() != o.lastOctet())
+            return this.lastOctet() - o.lastOctet();
+        else return 0;
     }
 
     public boolean equals(IP o){
-        return(this.lastOctet() == o.lastOctet());
+        return(this.lastOctet() == o.lastOctet()&&this.secondOctet() == o.secondOctet()&&this.thirdOctet()==o.thirdOctet()&&this.lastOctet()==o.lastOctet());
     }
 
     public String toString(){
