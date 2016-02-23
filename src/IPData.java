@@ -2,28 +2,41 @@
  * Created by srait on 11/3/2015.
  */
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.io.*;
+import java.time.*;
 public class IPData {
-
-    public static final Date CURRDATE = new Date();
-    public static final String TODAY = new SimpleDateFormat("MM/dd/yyyy").format(CURRDATE);    //Current Date
-    public static final String FILE_LOCATION = "C:\\temp";    //location to save output file
-    public static final String FILE_NAME = "Active_IP.txt";     //output file name
+    //Change global vars according to subnet and file location desired
+    public static final LocalDate TODAY = LocalDate.now();
+    public static final String FILE_LOCATION = "";    //location to save output file
+    public static final String FILE_NAME1 = "";     //output file name
+    public static final String FILE_NAME2 = "";
 
 
     public static void main(String[] args) throws Exception {
-        File output = new File(FILE_LOCATION+"\\"+FILE_NAME);
-        if(!output.exists())
-            createFile(output);
-        else{
-            Scan old = readFile(output);
-            Map<IP, String> newData=process(old);
-            writeFile(newData, output);
-        }
-        System.out.println(TODAY);
+        String IPRange1 = "";   //move these to global vars
+        String IPRange2 = "";
+        File output1 = new File(FILE_LOCATION+"\\"+FILE_NAME1);
+        File output2 = new File(FILE_LOCATION+"\\"+FILE_NAME2);
 
+        //first subnet
+        if(!output1.exists())
+            createFile(output1, IPRange1);
+        else{
+            Scan old = readFile(output1);
+            Map<IP, LocalDate> newData=process(old, IPRange1);
+            writeFile(newData, output1);
+        }
+
+        //second subnet
+        if(!output2.exists())
+            createFile(output2, IPRange2);
+        else{
+            Scan old = readFile(output2);
+            Map<IP, LocalDate> newData=process(old, IPRange2);
+            writeFile(newData, output2);
+        }
+        System.out.println(TODAY.format(Scan.formatter));
     }
 
     /**
@@ -31,11 +44,11 @@ public class IPData {
      * @param output the output file for holding old scan data
      * @throws FileNotFoundException
      */
-    public static void createFile(File output) throws FileNotFoundException{
+    public static void createFile(File output, String IPRange) throws FileNotFoundException{
         PrintWriter write = new PrintWriter(output);
-        String header = Scan.IP_RANGE.substring(0,Scan.IP_RANGE.lastIndexOf(".")+1);
+        String header = IPRange.substring(0,IPRange.lastIndexOf(".")+1);
         for(int i=1;i<=255;i++)
-            write.println("1/1/1900"+"\t"+header+i);
+            write.println("01/01/1900"+"\t"+header+i);
         write.close();
     }
 
@@ -44,12 +57,12 @@ public class IPData {
      * @param output the output file for holding old scan data
      */
     public static Scan readFile(File output)throws FileNotFoundException {
-        List<String> dates = new LinkedList<>();
+        List<LocalDate> dates = new LinkedList<>();
         List<IP> addresses = new LinkedList<>();
         Scanner reader = new Scanner(output);
         reader.useDelimiter("[\t\r\n]+");
         while(reader.hasNext()){
-            dates.add(reader.next());
+            dates.add(LocalDate.parse(reader.next(), Scan.formatter));
             addresses.add(new IP(reader.next()));
         }
         return new Scan(addresses, dates);
@@ -60,10 +73,10 @@ public class IPData {
      * Compare new data and old data
      * @param old old scan data
      */
-     public static Map<IP, String> process(Scan old) throws ParseException {
-        Scan cur = new Scan();  //current IP usage
-        Map<IP, String> newData = cur.asMap();
-        Map<IP, String> oldData = old.asMap();
+     public static Map<IP, LocalDate> process(Scan old, String IPRange) throws ParseException {
+        Scan cur = new Scan(IPRange);  //current IP usage
+        Map<IP, LocalDate> newData = cur.asMap();
+        Map<IP, LocalDate> oldData = old.asMap();
          System.out.println(newData);
         if(newData.size()>oldData.size())
             return(process(newData, oldData));
@@ -76,13 +89,12 @@ public class IPData {
      * @param big the larger of two Scan objects represented as a Map
      * @param little the smaller of two Scan objects represented as a Map
      */
-    public static Map<IP, String> process(Map<IP, String> big, Map<IP, String> little) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+    public static Map<IP, LocalDate> process(Map<IP, LocalDate> big, Map<IP, LocalDate> little) throws ParseException {
         Iterator<IP> littleIt = little.keySet().iterator();
         while(littleIt.hasNext()){
             IP currentIP = littleIt.next();
             if(big.containsKey(currentIP)){     //if the larger map contains the specified IP
-                if(sdf.parse(big.get(currentIP)).before(sdf.parse(TODAY))) //if the date in big is before the date in little
+                if((big.get(currentIP)).isBefore(TODAY)) //if the date in big is before the date in little
                     big.put(currentIP, TODAY);  //update the date for the IP in the large map
             }
         }
@@ -95,16 +107,19 @@ public class IPData {
      * @param output the output file for holding old scan data
      * @throws FileNotFoundException
      */
-    public static void writeFile(Map<IP, String> newData, File output)throws FileNotFoundException{
+    public static void writeFile(Map<IP, LocalDate> newData, File output)throws FileNotFoundException{
         PrintWriter writer = new PrintWriter(output);
         Iterator<IP> it = newData.keySet().iterator();
         IP curIP;
-        String curDate;
+        LocalDate curDate;
+        curIP = it.next();
+        curDate = newData.get(curIP);
         while(it.hasNext()){
+            writer.println(curDate.format(Scan.formatter) + "\t" + curIP);
             curIP = it.next();
             curDate = newData.get(curIP);
-            writer.println(curDate + "\t" + curIP);
         }
+        writer.print(curDate.format(Scan.formatter) + "\t" + curIP);
         writer.close();
     }
 }

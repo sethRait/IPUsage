@@ -1,26 +1,28 @@
 /**
  * Created by srait on 11/3/2015.
  */
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.io.*;
-public class Scan {
+import java.time.*;
+import java.time.format.*;
 
-    public static final String IP_RANGE = "192.168.1.0";     //IP range for NMAP scan ex. 192.168.1.0
+public class Scan {
+    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM'/'dd'/'yyyy");   //input and output format for dates
+    private String IPRange;
     private List<IP> active;
     private List<String> rawData;   //for debugging purposes only
-    private Map<IP, String> dateRep;
-    private List<String> date;
+    private Map<IP, LocalDate> dateRep;
+    private List<LocalDate> date;
 
     /**
      * Initializes a new Scan object with the results of a current NMAP scan.
      * Initializes Date to today
      */
-    public Scan(){
+    public Scan(String IPRange){
+        this.IPRange = IPRange;
         active = new LinkedList<>();
         runCmd();
-        Date currDate = new Date();
-        String today = new SimpleDateFormat("MM/dd/yyyy").format(currDate);    //Current Date
+        LocalDate today = LocalDate.now();  //current date
         date = new LinkedList<>();
         for(int i=0;i<active.size();i++)
             date.add(today);
@@ -28,9 +30,10 @@ public class Scan {
 
     /**
      * Initializes a new Scan object from the given list of IP addresses and date
-     * @param active
+     * @param active IP addresses from a previous scan
+     * @param date list of dates from a previous scan
      */
-    public Scan(List<IP> active, List<String> date){
+    public Scan(List<IP> active, List<LocalDate> date){
         this.active=active;
         this.date=date;
     }
@@ -43,7 +46,7 @@ public class Scan {
         rawData = new LinkedList<>();
         try {
             Runtime rt = Runtime.getRuntime();
-            Process pr = rt.exec("nmap -sn -n 192.168.1.0/24");
+            Process pr = rt.exec("nmap -sn -n "+IPRange);
             BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
             String line=null;
             while((line=input.readLine()) != null) {
@@ -65,7 +68,7 @@ public class Scan {
         Collections.sort(duplicate);
         int i=0;
         while(i<duplicate.size()){
-            if(duplicate.get(i).contains("Host"))
+            if(duplicate.get(i).contains("Host")||duplicate.get(i).contains("MAC")) //For summery lines
                 duplicate.remove(i);
             else
                 i++;
@@ -109,14 +112,14 @@ public class Scan {
     }
 
     /**
-     * Creates and returns a HashMap representation of the list, wherein the Key is the IP
+     * Creates and returns a Map representation of the list, wherein the Key is the IP
      * and the Value is the Date associated with the IP.
      * if called on a newly created object, date will be today.
      * @return dateRep
      */
-    public Map<IP, String> asMap(){
+    public Map<IP, LocalDate> asMap(){
         dateRep = new TreeMap<>();
-        Iterator<String> dateIt = date.iterator();
+        Iterator<LocalDate> dateIt = date.iterator();
         for(IP ip : active)
             dateRep.put(ip, dateIt.next());
         return dateRep;
@@ -135,12 +138,12 @@ public class Scan {
         asMap();
         Iterator<IP> itr = dateRep.keySet().iterator();
         IP currIP = itr.next();
-        String currDate = dateRep.get(currIP);
-        String s="["+currIP+": "+currDate;
+        LocalDate currDate = dateRep.get(currIP);
+        String s="["+currIP+": "+currDate.format(formatter);
         while(itr.hasNext()) {
             currIP = itr.next();
             currDate = dateRep.get(currIP);
-            s += ", " + currIP+": "+currDate;
+            s += ", " + currIP+": "+currDate.format(formatter);
         }
         return s+"]";
     }
