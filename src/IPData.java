@@ -8,14 +8,14 @@ import java.time.*;
 public class IPData {
     //Change global vars according to subnet and file location desired
     public static final LocalDate TODAY = LocalDate.now();
-    public static final String FILE_LOCATION = "C:\\Reports";    //location to save output file
-    public static final String FILE_NAME1 = "loc_1";     //output file name
-    public static final String FILE_NAME2 = "loc_2";
+    public static final String FILE_LOCATION = "C:\\Users\\srait\\Box Sync\\Public Domain\\Reports";    //location to save output file
+    public static final String FILE_NAME1 = "Active_IP_58.txt";     //output file name
+    public static final String FILE_NAME2 = "Active_IP_90.txt";
 
 
     public static void main(String[] args) throws Exception {
-        String IPRange1 = "192.168.1.0/24";   //move these to global vars
-        String IPRange2 = "10.1.10.0/24";
+        String IPRange1 = "129.64.58.0/24";   //move these to global vars
+        String IPRange2 = "129.64.90.0/24";
         File output1 = new File(FILE_LOCATION+"\\"+FILE_NAME1);
         File output2 = new File(FILE_LOCATION+"\\"+FILE_NAME2);
 
