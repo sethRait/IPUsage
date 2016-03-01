@@ -48,8 +48,8 @@ public class Scan {
             BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
             Pattern p = Pattern.compile("(?:[0-9]{1,3}\\.){3}[0-9]{1,3}");  //pattern for matching IP addresses
             Matcher matcher;
-            String line = input.readLine();
-            while(line != null) {
+            String line;
+            while((line=input.readLine()) != null) {
                 matcher = p.matcher(line);
                 if(matcher.find())
                     active.add((new IP(matcher.group())));
