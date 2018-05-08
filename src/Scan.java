@@ -1,14 +1,13 @@
-/**
- * Created by srait on 11/3/2015.
- */
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.regex.*;
-import java.io.*;
-import java.time.*;
-import java.time.format.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class Scan {
-    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM'/'dd'/'yyyy");   //input and output format for dates
+class Scan {
+    static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM'/'dd'/'yyyy");   //input and output format for dates
     private String IPRange;
     private List<IP> active;
     private Map<IP, LocalDate> dateRep;
@@ -18,7 +17,7 @@ public class Scan {
      * Initializes a new Scan object with the results of a current NMAP scan.
      * Initializes Date to today
      */
-    public Scan(String IPRange){
+    Scan(String IPRange) {
         this.IPRange = IPRange;
         active = new LinkedList<>();
         runCmd();
@@ -31,7 +30,7 @@ public class Scan {
      * @param active IP addresses from a previous scan
      * @param dates list of dates from a previous scan
      */
-    public Scan(List<IP> active, List<LocalDate> dates){
+    Scan(List<IP> active, List<LocalDate> dates) {
         this.active=active;
         this.dates=dates;
     }
@@ -40,7 +39,7 @@ public class Scan {
      * runs the NMAP scan and places preliminary results in the rawData list,
      * then calls purge() to retrieve IP addresses from the list.
      */
-    public void runCmd(){
+    private void runCmd() {
         active = new LinkedList<>();
         try {
             Runtime rt = Runtime.getRuntime();
@@ -61,17 +60,13 @@ public class Scan {
         }
     }
 
-    public int size(){
-        return active.size();
-    }
-
     /**
      * Creates and returns a Map representation of the list, wherein the Key is the IP
      * and the Value is the Date associated with the IP.
      * if called on a newly created object, date will be today.
      * @return dateRep
      */
-    public Map<IP, LocalDate> asMap(){
+    Map<IP, LocalDate> asMap() {
         dateRep = new TreeMap<>();
         if(dates.size()==1)
             for(IP ip : active)

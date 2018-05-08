@@ -5,4 +5,3 @@ Enable user configuration and customization:
     -Add "exclude" ranges
         -Auto-exclude gateway/broadcast (.1, .255)?
     -Create email reports
-    -Use regex for filtering and parsing scan report
