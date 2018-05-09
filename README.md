@@ -9,7 +9,7 @@ subnet which have been inactive for more than 30 days.
 
 ## Installation:
 - Install [NMAP](https://nmap.org/download.html) on your system.
-- Install JRE 8
+- Install JRE 8.
 - Clone this repository.
 
 ## Usage:
