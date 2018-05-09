@@ -23,7 +23,7 @@ Where ```<Directory for log files>``` is the directory in which you would like t
 
 For example, the following command will scan two subnets and place the output files in ```C:\Users\foo\bar```:
 ```
-java -jar C:\path\to\SubnetReporting.jar C:\Users\foo\bar 192.168.62.0/24 168.57.42.0/24
+java -jar SubnetReporting.jar C:\Users\foo\bar 192.168.62.0/24 168.57.42.0/24
 ```
 This will produce three output files:
 
