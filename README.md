@@ -18,7 +18,7 @@ java -jar C:\path\to\SubnetReporting.jar <Directory for log files> [-i <#>] <sub
 ```
 Where ```<Directory for log files>``` is the directory in which you would like the program to store the generated files,
  and each ```<subnet n>``` is a subnet on which to run the NMAP scan in the form ```a.b.c.d/x```.
- ```-i <#>``` is the number of days an IP needs to be inactive before it is logged in the inactive log file.
+ ```-i <#>``` is the number of days an IP needs to be inactive before it is logged in the inactive log file (default is 30 days).
  Arguments in ```[]``` are optional.
 
 For example, the following command will scan two subnets and place the output files in ```C:\Users\foo\bar```:
