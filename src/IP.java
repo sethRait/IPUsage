@@ -1,32 +1,29 @@
-/**
- * Created by srait on 11/3/2015.
- */
-public class IP implements Comparable<IP>{
+class IP implements Comparable<IP> {
     private String address;
 
-    public IP(String address){
+    IP(String address) {
         this.address=address;
     }
 
     //integer representation of the first octet of the given IP address
-    public int firstOctet(){
+    private int firstOctet() {
         return Integer.parseInt(address.substring(0, address.indexOf(".")));
     }
 
     //integer representation of the second octet of the given IP address
-    public int secondOctet(){
+    private int secondOctet() {
         String center = address.substring(address.indexOf(".")+1, address.lastIndexOf("."));
         return middle(1, center);
     }
 
     //integer representation of the third octet of the given IP address
-    public int thirdOctet(){
+    private int thirdOctet() {
         String center = address.substring(address.indexOf(".")+1, address.lastIndexOf("."));
         return middle(2, center);
     }
 
     //integer representation of the last octet of the given IP address
-    public int lastOctet(){
+    private int lastOctet() {
         return Integer.parseInt(address.substring(address.lastIndexOf(".") + 1, address.length()));
     }
 

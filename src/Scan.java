@@ -31,30 +31,30 @@ class Scan {
      * @param dates list of dates from a previous scan
      */
     Scan(List<IP> active, List<LocalDate> dates) {
-        this.active=active;
-        this.dates=dates;
+        this.active = active;
+        this.dates = dates;
     }
 
     /**
-     * runs the NMAP scan and places preliminary results in the rawData list,
-     * then calls purge() to retrieve IP addresses from the list.
+     * Runs an NMAP scan on the specified subnet and parses the results for active IP addresses.
+     * At the completion of this method, 'active' is a list of all the IP addresses which were active during the scan.
+     * The scan used here does not do a full port scan, it only pings hosts.
      */
     private void runCmd() {
         active = new LinkedList<>();
         try {
             Runtime rt = Runtime.getRuntime();
-            Process pr = rt.exec("nmap -sn -n "+IPRange);
+            Process pr = rt.exec("nmap -sn -n " + IPRange);
             BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-            Pattern p = Pattern.compile("(?:[0-9]{1,3}\\.){3}[0-9]{1,3}");  //pattern for matching IP addresses
+            Pattern p = Pattern.compile("(?:[0-9]{1,3}\\.){3}[0-9]{1,3}");  // Pattern for matching IP addresses
             Matcher matcher;
             String line;
-            while((line=input.readLine()) != null) {
+            while ((line = input.readLine()) != null) {
                 matcher = p.matcher(line);
-                if(matcher.find())
-                    active.add((new IP(matcher.group())));
+                if (matcher.find())
+                    active.add(new IP(matcher.group()));
             }
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.out.println(e.toString());
             e.printStackTrace();
         }
@@ -68,12 +68,12 @@ class Scan {
      */
     Map<IP, LocalDate> asMap() {
         dateRep = new TreeMap<>();
-        if(dates.size()==1)
-            for(IP ip : active)
+        if (dates.size() == 1) {
+            for (IP ip : active)
                 dateRep.put(ip, dates.get(0));
-        else{
+        } else {
             Iterator<LocalDate> dateIter = dates.iterator();
-            for(IP ip : active)
+            for (IP ip : active)
                 dateRep.put(ip, dateIter.next());
         }
         return dateRep;
@@ -81,9 +81,9 @@ class Scan {
 
     public String toString(){
         Iterator itr = active.iterator();
-        String s="["+itr.next();
+        String s = "[" + itr.next();
         while(itr.hasNext())
-            s+=", "+itr.next();
-        return s+"]";
+            s += ", " + itr.next();
+        return s + "]";
     }
 }

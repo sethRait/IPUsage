@@ -43,7 +43,10 @@ public class IPData {
 
     private static void createIfNotExists(Map.Entry<String, File> kv) throws FileNotFoundException {
         if (!kv.getValue().exists()) {
+            System.out.println("Creating file for " + kv.getKey());
             createFile(kv.getValue(), kv.getKey());
+        } else {
+            System.out.println("File for " + kv.getKey() + " already exists");
         }
     }
 
@@ -56,7 +59,7 @@ public class IPData {
         PrintWriter write = new PrintWriter(output);
         String header = IPRange.substring(0, IPRange.lastIndexOf(".") + 1);
         for (int i = 1; i <= 255; i++)
-            write.println("01/01/1900"+"\t"+header+i);
+            write.println("01/01/1900" + "\t" + header + i);
         write.close();
     }
 
@@ -86,10 +89,7 @@ public class IPData {
         Map<IP, LocalDate> newData = cur.asMap();
         Map<IP, LocalDate> oldData = old.asMap();
         System.out.println(newData);
-        if (newData.size() > oldData.size())
-            return(process(newData, oldData));
-        else
-            return(process(oldData, newData));
+        return newData.size() > oldData.size() ? process(newData, oldData) : process(oldData, newData);
      }
 
     /**

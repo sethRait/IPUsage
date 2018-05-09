@@ -57,11 +57,11 @@ public class Inactive30 {
         Scanner reader = new Scanner(input);
         LocalDate curDate;
         IP curIP;
-        while(reader.hasNextLine()){
-            while(reader.hasNext()) {
+        while (reader.hasNextLine()) {
+            while (reader.hasNext()) {
                 curDate = LocalDate.parse(reader.next(), Scan.formatter);
                 curIP = new IP(reader.next());
-                if(curDate.isBefore(TODAY.minusDays(30)))
+                if (curDate.isBefore(TODAY.minusDays(30)))
                     old.put(curIP, curDate);
             }
         }
